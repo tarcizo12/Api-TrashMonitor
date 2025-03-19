@@ -7,11 +7,20 @@
 	},
 	"item": [
 		{
-			"name": "endpoint-mqtt",
+			"name": "endpoint-teste",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://localhost:4000/mqtt/messages"
+				"url": "http://localhost:4000/api/teste"
+			},
+			"response": []
+		},
+		{
+			"name": "endpoint-teste Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:4000/api/teste"
 			},
 			"response": []
 		}
