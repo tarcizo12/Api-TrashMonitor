@@ -1,0 +1,19 @@
+{
+	"info": {
+		"_postman_id": "57a7a5fa-4cf6-4818-ab3e-54ad5cc818d0",
+		"name": "api-trash1-monitor",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28723467"
+	},
+	"item": [
+		{
+			"name": "endpoint-mqtt",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:4000/mqtt/messages"
+			},
+			"response": []
+		}
+	]
+}
