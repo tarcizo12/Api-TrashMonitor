@@ -4,7 +4,7 @@ Este projeto foi desenvolvido como parte da entrega final da cadeira **T138-16 -
 
 ## 📁 Estrutura do Projeto
 
-O projeto segue uma estrutura modular para facilitar a manutenção e escalabilidade:
+O projeto segue uma estrutura modular.
 
 ```
 Api-TrashMonitor/
@@ -18,8 +18,6 @@ Api-TrashMonitor/
 │   │   │── data.controller.js # Controlador de dados
 │   │── models/           # Modelos do banco de dados (MongoDB)
 │   │   │── Data.js       # Modelo de dados da lixeira
-│   │── services/         # Serviços de comunicação com MQTT
-│   │   │── mqttService.js # Processamento das mensagens MQTT
 │   │── app.js            # Configuração do Express e middlewares
 │── server.js             # Ponto de entrada do servidor
 │── package.json          # Dependências e scripts
@@ -35,6 +33,7 @@ Api-TrashMonitor/
 - **Mongoose** - ODM para modelagem e manipulação do MongoDB
 - **MQTT.js** - Biblioteca para comunicação com o broker MQTT
 - **dotenv** - Gerenciamento de variáveis de ambiente
+- **nodemon** - Monitoramento de alterações no código para reinicialização automática do servidor
 
 ## 🚀 Como Executar o Projeto
 
@@ -42,7 +41,7 @@ Api-TrashMonitor/
 Antes de iniciar, certifique-se de ter instalado:
 - [Node.js](https://nodejs.org/)
 - [MongoDB](https://www.mongodb.com/try/download/community) (pode usar um serviço como MongoDB Atlas)
-- Um **broker MQTT** (exemplo: [Mosquitto](https://mosquitto.org/))
+- Um **broker MQTT** (exemplo: [HiveMQ](https://www.hivemq.com/mqtt/public-mqtt-broker/))
 
 ### 2️⃣ **Configuração**
 Clone o repositório e instale as dependências:
@@ -55,26 +54,49 @@ npm install
 
 Crie um arquivo `.env` na raiz do projeto e configure suas variáveis de ambiente:
 
-```sh
-MONGO_URI=mongodb://localhost:27017/trashmonitor
-MQTT_BROKER_URL=mqtt://seu-broker.com
-PORT=3000
-```
 
 ### 3️⃣ **Executando a API**
-Para iniciar o servidor:
+
+#### 🔥 Modo de desenvolvimento (com reinicialização automática)
+Se deseja rodar a API e reiniciar automaticamente ao detectar mudanças no código, utilize `nodemon`:
+
+```sh
+npm run dev
+```
+
+#### 🚀 Modo de produção
+Para rodar a API sem monitoramento de mudanças, utilize:
 
 ```sh
 npm start
 ```
 
 A API estará rodando em:  
-📌 **http://localhost:3000**
+📌 **http://localhost:4000/api**
 
 ### 4️⃣ **Endpoints Disponíveis**
-| Método | Rota         | Descrição |
-|--------|-------------|-----------|
-| GET    | `/api/dados` | Retorna os dados da lixeira armazenados no MongoDB |
+| Método | Rota             | Descrição |
+|--------|-----------------|-----------|
+| GET    | `/mqtt/messages` | Retorna as últimas mensagens recebidas do MQTT |
+| GET    | `/teste`         | Verifica se a API está funcionando corretamente |
 
 ## 📡 Comunicação MQTT
-O serviço MQTT escuta mensagens no tópico **`topico/hardware`** e armazena as informações no banco de dados.
+O serviço MQTT escuta mensagens no tópico **`MonitoramentoLixo`** e armazena as informações no banco de dados.
+
+## 📜 Scripts Disponíveis
+No arquivo `package.json`, foram adicionados os seguintes scripts:
+
+```json
+"scripts": {
+  "start": "node ./src/app.js",
+  "dev": "nodemon ./src/app.js"
+}
+```
+
+- **`npm run dev`** → Inicia a API com `nodemon` (recarrega automaticamente ao detectar mudanças no código)
+- **`npm start`** → Inicia a API normalmente com Node.js
+
+---
+
+Agora o projeto está pronto para desenvolvimento e produção! 🚀
+
