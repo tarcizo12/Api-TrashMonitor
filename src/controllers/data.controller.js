@@ -1,4 +1,4 @@
-const Data = require("../models/Data");
+const { ObjectId } = require("mongodb"); // Adicionando a importação do ObjectId
 const connectDB = require("../config/database"); // Conexão com o banco
 
 const DATABASE_NAME = "trash-monitor"; 
@@ -11,29 +11,40 @@ const getDBClient = async () => {
   return dbClient;
 };
 
-// ✅ Buscar todos os registros
+// ✅ Buscar todos os registros de todas as lixeiras
 exports.getAllData = async (res) => {
   try {
-    const client = await getDBClient(); 
-    const data = await client.db(DATABASE_NAME).collection("data").find().toArray();
-    res.json(data);
+    const client = await getDBClient();
+    const collections = await client.db(DATABASE_NAME).listCollections().toArray(); // Lista as coleções do banco
+
+    const allData = [];
+
+    // Iterando sobre as coleções de lixeiras
+    for (const collection of collections) {
+      if (collection.name.startsWith("Lixeira")) { // Verifica se a coleção começa com "Lixeira"
+        const data = await client.db(DATABASE_NAME).collection(collection.name).find().toArray(); // Busca os dados dessa coleção
+        allData.push({ collection: collection.name, data });
+      }
+    }
+
+    res.json(allData); // Retorna os dados de todas as coleções de lixeiras
   } catch (err) {
-    res.status(500).json({ error: "Erro ao buscar dados" });
+    res.status(500).json({ error: "Erro ao buscar dados de todas as lixeiras" });
   }
 };
 
-// ✅ Buscar registros por id
+// ✅ Buscar registros por id da lixeira
 exports.getDataById = async (req, res) => {
   try {
-    const { idLixeira } = req.params;
+    const { idLixeira } = req.params; // Obtém o id da lixeira do parâmetro da rota
     const client = await getDBClient(); 
-    const data = await client.db(DATABASE_NAME).collection("data").find({ idLixeira }).toArray();
+    const data = await client.db(DATABASE_NAME).collection(`Lixeira${idLixeira}`).find().toArray(); // Busca dados da coleção da lixeira específica
 
     if (!data.length) {
       return res.status(404).json({ message: "Nenhum dado encontrado para essa lixeira." });
     }
 
-    res.json(data);
+    res.json(data); // Retorna os dados encontrados
   } catch (err) {
     res.status(500).json({ error: "Erro ao buscar dados por idLixeira" });
   }
@@ -69,44 +80,4 @@ exports.createData = async (req) => {
   }
 };
 
-// ✅ Atualizar
-exports.updateData = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { percentualVolumeAtual } = req.body;
 
-    const client = await getDBClient(); // Obtém o cliente MongoDB
-
-    const updatedData = await client.db(DATABASE_NAME).collection("data").findOneAndUpdate(
-      { _id: new ObjectId(id) }, // Localiza pelo id
-      { $set: { percentualVolumeAtual, datahoraRegistroMensagem: Date.now() } },
-      { returnOriginal: false } // Retorna o documento atualizado
-    );
-
-    if (!updatedData.value) {
-      return res.status(404).json({ message: "Registro não encontrado." });
-    }
-
-    res.json(updatedData.value);
-  } catch (err) {
-    res.status(500).json({ error: "Erro ao atualizar registro" });
-  }
-};
-
-// ✅ Deletar 
-exports.deleteData = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const client = await getDBClient(); // Obtém o cliente MongoDB
-
-    const deletedData = await client.db(DATABASE_NAME).collection("data").deleteOne({ _id: new ObjectId(id) });
-
-    if (deletedData.deletedCount === 0) {
-      return res.status(404).json({ message: "Registro não encontrado." });
-    }
-
-    res.json({ message: "Registro deletado com sucesso!" });
-  } catch (err) {
-    res.status(500).json({ error: "Erro ao deletar registro" });
-  }
-};
