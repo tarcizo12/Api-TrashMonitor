@@ -93,8 +93,7 @@ As mensagens enviadas para o broker MQTT terão o seguinte formato para informar
 ```json
 {
   "idLixeira": "1",
-  "percentualVolumeAtual": 89,
-  "datahoraRegistroMensagem": "2025-03-22 21:56:07"
+  "percentualVolumeAtual": 89
 }
 ```
 
