@@ -1,11 +1,33 @@
-const mongoose = require("mongoose");
+require("dotenv").config(); // Carrega as variáveis do .env
+const { MongoClient, ServerApiVersion } = require('mongodb');
+
+let client; 
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log("MongoDB conectado!");
+    if (client) {
+      console.log("✅ Conexão existente com o MongoDB já está aberta.");
+      return client;
+    }
+
+
+    client = new MongoClient(process.env.MONGO_URI, {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+      }
+    });
+
+    await client.connect();
+    
+    await client.db("admin").command({ ping: 1 });
+
+    console.log("✅ MongoDB conectado com sucesso ao cluster TrashMonitor!");
+    return client;
+
   } catch (err) {
-    console.error("Erro ao conectar ao MongoDB:", err);
+    console.error("❌ Erro ao conectar ao MongoDB:", err);
     process.exit(1);
   }
 };
