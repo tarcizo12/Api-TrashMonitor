@@ -77,11 +77,26 @@ A API estará rodando em:
 ### 4️⃣ **Endpoints Disponíveis**
 | Método | Rota             | Descrição |
 |--------|-----------------|-----------|
-| GET    | `/mqtt/messages` | Retorna as últimas mensagens recebidas do MQTT |
-| GET    | `/teste`         | Verifica se a API está funcionando corretamente |
+| GET    | `api/lixeiras` | Retorna todas as colecoes e seus respectivos registros |
+| GET    | `api/teste`         | Verifica se a API está funcionando corretamente |
+| GET    | `/lixeira/:idLixeira`         | Pesquisa registro por ID da colecao |
+
+
 
 ## 📡 Comunicação MQTT
 O serviço MQTT escuta mensagens no tópico **`MonitoramentoLixo`** e armazena as informações no banco de dados.
+
+# Exemplo de mensagem postada no broker MQTT
+
+As mensagens enviadas para o broker MQTT terão o seguinte formato para informar o status de uma lixeira:
+
+```json
+{
+  "idLixeira": "1",
+  "percentualVolumeAtual": 89,
+  "datahoraRegistroMensagem": "2025-03-22 21:56:07"
+}
+```
 
 ## 📜 Scripts Disponíveis
 No arquivo `package.json`, foram adicionados os seguintes scripts:

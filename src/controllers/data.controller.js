@@ -61,10 +61,14 @@ exports.createData = async (req) => {
 
     const client = await getDBClient(); 
 
+    const brasiliaTime = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+    const [date, time] = brasiliaTime.split(' ');  // Separa a data da hora
+    const datahoraRegistroMensagem = `${date.split('/').join('-')} ${time}`;
+
     const newData = {
       idLixeira,
       percentualVolumeAtual,
-      datahoraRegistroMensagem: new Date().toISOString().split('T').join(' ').split('.')[0], 
+      datahoraRegistroMensagem
     };
 
     const result = await client.db(DATABASE_NAME).collection(`Lixeira${idLixeira}`).insertOne(newData);
