@@ -23,6 +23,15 @@
 				"url": "http://localhost:4000/api/lixeira/1"
 			},
 			"response": []
+		},
+		{
+			"name": "getAll",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:4000/api/lixeiras"
+			},
+			"response": []
 		}
 	]
 }

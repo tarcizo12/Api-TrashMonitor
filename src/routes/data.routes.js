@@ -11,14 +11,11 @@ const PATHS = {
 
 
 // ✅ Rota para testar a API
-router.get(PATHS.TESTAR_API, (req, res) => {
-  res.json({ message: "API está funcionando corretamente!" });
-});
+router.get(PATHS.TESTAR_API, (res) => { res.json({ message: "API está funcionando corretamente!" }); });
 
 // ✅ Rota para retornar dados de todas as lixeiras
-router.get(PATHS.LIXEIRAS, async (req, res) => {
-  getAllData(res); // Chama a função getAllData do controller
-});
+router.get(PATHS.LIXEIRAS, async (req, res) => { await getAllData(res); });
+
 
 // ✅ Rota para retornar os dados de uma lixeira específica
 router.get(PATHS.LIXEIRA_ID, getDataById);
