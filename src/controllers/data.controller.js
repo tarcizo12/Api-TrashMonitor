@@ -1,5 +1,6 @@
 const Data = require("../models/Data");
 
+//* A ideia é que esse arquivo gerencie os inserts, updates e consultas na base*// 
 exports.getData = async (req, res) => {
   try {
     const data = await Data.find();

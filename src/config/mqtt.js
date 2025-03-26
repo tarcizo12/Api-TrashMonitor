@@ -1,55 +1,59 @@
-var mqtt = require('mqtt');
+const mqtt = require('mqtt');
 const dotenv = require("dotenv");
 dotenv.config();
 
-var messages = []; // Armazenar as últimas 5 mensagens recebidas
+const MENSAGEM_CONECTADO = 'Conectado ao broker MQTT';
+const MENSAGEM_ERRO_CONEXAO = 'Erro na conexão MQTT:';
+const MENSAGEM_RECEBIDA_TOPICO = 'Mensagem recebida no tópico:';
+const MENSAGEM_INSCRICAO_TOPICO = 'Inscrito no tópico:';
+const MENSAGEM_ERRO_INSCRICAO_TOPICO = 'Erro ao se inscrever no tópico:';
+const LIMITE_DE_MENSAGENS_RETORNADAS = 10;
+const TOPICO_INSCRICAO = "MonitoramentoLixo";
 
-// Opções de conexão com base nas suas credenciais
-var options = {
-    host: process.env.MQTT_BROKER_URL, 
-    port: process.env.MQTT_PORT,        
-    protocol: 'mqtts',                  
-    username: process.env.MQTT_USERNAME, 
-    password: process.env.MQTT_PASSWORD  
+// Armazenar as últimas mensagens recebidas
+const messages = [];
+
+const options = {
+    host: process.env.MQTT_BROKER_URL,
+    port: process.env.MQTT_PORT,
+    protocol: 'mqtts',
+    username: process.env.MQTT_USERNAME,
+    password: process.env.MQTT_PASSWORD
 };
-
-console.log("opcoes, ", options)
-
 
 const client = mqtt.connect(options);
 
-
 client.on('connect', function () {
-    console.log('Conectado ao broker MQTT');
+    console.log(MENSAGEM_CONECTADO);
 });
 
 client.on('error', function (error) {
-    console.log('Erro na conexão MQTT:', error);
+    console.log(MENSAGEM_ERRO_CONEXAO, error);
 });
 
-
 client.on('message', function (topic, message) {
-    console.log('Mensagem recebida no tópico', topic, ':', message.toString());
+    const mensagemRetornadaTopicoMonitoramento = message.toString();
 
-    // Adicionar a mensagem ao array de mensagens (limitar a 5 mensagens)
-    if (messages.length >= 5) {
-        messages.shift(); // Remove a mensagem mais antiga
+    console.log(`${MENSAGEM_RECEBIDA_TOPICO} ${topic}, valor: ${mensagemRetornadaTopicoMonitoramento}`);
+
+    if (messages.length >= LIMITE_DE_MENSAGENS_RETORNADAS) {
+        messages.shift();
     }
-    messages.push(message.toString());
+
+    messages.push(mensagemRetornadaTopicoMonitoramento);
 });
 
 // Inscrever-se no tópico 'MonitoramentoLixo'
-client.subscribe('MonitoramentoLixo', function (err) {
+client.subscribe(TOPICO_INSCRICAO, function (err) {
     if (!err) {
-        console.log('Inscrito no tópico: MonitoramentoLixo');
+        console.log(`${MENSAGEM_INSCRICAO_TOPICO} ${TOPICO_INSCRICAO}`);
     } else {
-        //console.log('Erro ao se inscrever no tópico:', err);
+        console.log(MENSAGEM_ERRO_INSCRICAO_TOPICO, err);
     }
 });
 
-
-const  getLastMessages = () => {
+const getLastMessages = () => {
     return messages;
-}
+};
 
 module.exports = { client, getLastMessages };
