@@ -1,4 +1,5 @@
 const express = require("express");
+const dotenv = require("dotenv");
 dotenv.config();
 const dataRoutes = require("./routes/data.routes");
 
