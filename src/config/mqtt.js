@@ -40,7 +40,7 @@ client.on("message", async function (topic, message) {
     const mensagemRecebida = message.toString();
     console.log(`${MENSAGEM_RECEBIDA_TOPICO} ${topic}, valor: ${mensagemRecebida}`);
 
-    
+
     await createData({ body: JSON.parse(mensagemRecebida) });
   } catch (error) {
     console.error("❌ Erro ao processar a mensagem MQTT:", error.message);
